@@ -17,7 +17,6 @@ typedef struct {
   int rs2; // source register 2
   int rd;  // destination register
 } Instruction;
-
 Instruction program[num_instr];
 
 // estação de reserva
@@ -28,6 +27,7 @@ typedef struct {
   int dest;   // destino da instrução
   bool busy;  // instr de reserva ocupada
 } ReservationStation;
+ReservationStation res[rs_size];
 
 // buffer de reordenação
 typedef struct {
@@ -55,7 +55,37 @@ typedef struct {
 } Control;
 Control control = {0, 0, 0, 0, 0};
 
-// fazer unidade funcional?
+// verifica se o buffer de reordenação está cheio
+bool is_rob_full() {
+    return control.rob_ocup >= rob_size;
+}
+
+// verifica se todas as estações de reserva estão ocupadas
+bool is_res_full() {
+    for (int i = 0; i < rs_size; i++) {
+        if (!res[i].busy) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// adiciona entrada no rob
+int add_to_rob(Opcode op, int dst) {
+    int index = control.rob_fim;
+
+    rob[index].op = op;
+    rob[index].dest = dst;
+    rob[index].ready = false;
+    rob[index].busy = true;
+
+    control.rob_fim = (control.rob_fim + 1) % rob_size; // move para o próximo índice
+    control.rob_ocup++;
+    return index; 
+}
+
+
+
 
 // conversão de mnemônicos do file
 Opcode get_opcode(const char *mnemonic) {
