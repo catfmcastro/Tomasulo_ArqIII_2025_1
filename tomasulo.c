@@ -108,7 +108,7 @@ void print_program(Instruction *program, int n) {
 
   for (int i = 0; i < n; i++) {
     Instruction instr = program[i];
-    const char *op_str[] = {"ADD", "MUL", "SUB", "DIV", "HALT"};
+    const char *op_str[] = {"ADD", "MUL", "SUB", "DIV", "LI", "HALT"};
 
     printf("  { %s, %d, %d, %d }", op_str[instr.op], instr.rd, instr.rs1,
            instr.rs2);
@@ -280,9 +280,8 @@ void write_result() {
   }
 }
 
-
 int main() {
-  FILE *fp = fopen("programa2.txt", "r"); // abertura de arquivo
+  FILE *fp = fopen("programa.txt", "r"); // abertura de arquivo
   if (fp == NULL) {
     perror("Erro ao abrir o arquivo");
     return 1;
