@@ -12,7 +12,6 @@ typedef enum { ADD, SUB, MUL, DIV, HALT } Opcode;
 
 // instrução
 typedef struct {
-  int instr_id;
   int op;  // operation code
   int rs1; // source register 1
   int rs2; // source register 2
@@ -58,6 +57,7 @@ Control control = {0, 0, 0, 0, 0};
 
 // fazer unidade funcional?
 
+// conversão de mnemônicos do file
 Opcode get_opcode(const char *mnemonic) {
   if (strcmp(mnemonic, "add") == 0)
     return ADD;
@@ -75,7 +75,6 @@ Opcode get_opcode(const char *mnemonic) {
 
 // imprime programa
 void print_program(Instruction *program, int n) {
-
   printf("Instr program[N_INSTR] = {\n\n");
 
   for (int i = 0; i < n; i++) {
@@ -99,11 +98,11 @@ void print_program(Instruction *program, int n) {
     }
     printf("\n");
   }
-  printf("};\n");
+  printf("};\n\n");
 }
 
 int main() {
-  FILE *fp = fopen("programa.txt", "r");
+  FILE *fp = fopen("programa.txt", "r"); // abertura de arquivo
   if (fp == NULL) {
     perror("Erro ao abrir o arquivo");
     return 1;
@@ -138,7 +137,17 @@ int main() {
 
   fclose(fp);
 
+  // imprime instruções lidas
+  printf("--------- Programa lido:\n");
   print_program(program, count);
+
+  // execução de tomasulo
+  while (program[control.pc].op != HALT) {
+    printf("----------- Clock Cycle: %d ----------- \n", control.clock);
+
+    control.clock++;
+    control.pc++;
+  }
 
   return 0;
 }
