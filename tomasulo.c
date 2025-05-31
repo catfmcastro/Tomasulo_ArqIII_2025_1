@@ -280,7 +280,6 @@ void write_result() {
   }
 }
 
-
 int main() {
   FILE *fp = fopen("programa2.txt", "r"); // abertura de arquivo
   if (fp == NULL) {
